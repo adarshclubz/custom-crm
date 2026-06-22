@@ -1,0 +1,19 @@
+# OS
+.DS_Store
+
+# Secrets / env — NEVER commit (also covered by app/.gitignore)
+.env
+.env.local
+.env*.local
+
+# Dependencies / build output (any nesting)
+node_modules/
+.next/
+out/
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+
+# Local test artifacts (contain personal data)
+smoke_test_contacts.csv
