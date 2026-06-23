@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { getGroupDetail } from "@/lib/groups";
 import { formatDate, pluralize } from "@/lib/format";
 import { GroupContactsTable } from "@/components/contacts/group-contacts-table";
+import { AddToGroupButton } from "@/components/contacts/add-to-group-button";
 
 export const dynamic = "force-dynamic";
 
@@ -30,15 +31,22 @@ export default async function GroupDetailPage({
           Contacts
         </Link>
 
-        <div className="flex flex-col gap-1">
-          <h1 className="font-display text-3xl tracking-tight">{group.name}</h1>
-          <p className="text-muted-foreground text-sm">
-            {pluralize(contacts.length, "contact")}
-            {group.sourceFilename && (
-              <span className="opacity-60"> · {group.sourceFilename}</span>
-            )}
-            <span className="opacity-60"> · Uploaded {formatDate(group.createdAt)}</span>
-          </p>
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex flex-col gap-1">
+            <h1 className="font-display text-3xl tracking-tight">{group.name}</h1>
+            <p className="text-muted-foreground text-sm">
+              {pluralize(contacts.length, "contact")}
+              {group.sourceFilename && (
+                <span className="opacity-60"> · {group.sourceFilename}</span>
+              )}
+              <span className="opacity-60">
+                {" "}
+                · {group.sourceFilename ? "Uploaded" : "Created"}{" "}
+                {formatDate(group.createdAt)}
+              </span>
+            </p>
+          </div>
+          <AddToGroupButton groupId={group.id} groupName={group.name} />
         </div>
       </div>
 

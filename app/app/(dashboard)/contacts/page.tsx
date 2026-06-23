@@ -11,7 +11,8 @@ export default async function ContactsPage() {
       <div className="flex flex-col gap-1">
         <h1 className="font-display text-3xl tracking-tight">Contacts</h1>
         <p className="text-muted-foreground text-sm">
-          Each CSV upload creates a group. Click a group to view its contacts.
+          Add contacts manually or upload a CSV — each creates a group. Click a
+          group to view its contacts.
         </p>
       </div>
 

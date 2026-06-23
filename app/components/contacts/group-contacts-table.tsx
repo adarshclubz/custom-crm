@@ -192,6 +192,12 @@ export function GroupContactsTable({
 }) {
   // Optimistic local state — removals and status changes persist until page refresh.
   const [contacts, setContacts] = React.useState(initial);
+  // Re-seed when the server sends a fresh list (e.g. after router.refresh() once
+  // contacts are added to this group). Safe because removals/status changes are
+  // already persisted server-side, so a fresh fetch stays consistent.
+  React.useEffect(() => {
+    setContacts(initial);
+  }, [initial]);
   const [statusOverrides, setStatusOverrides] = React.useState<
     Record<string, LeadStatus>
   >({});

@@ -3,7 +3,14 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FolderOpen, UploadCloud, Check, Users, Loader2 } from "lucide-react";
+import {
+  FolderOpen,
+  UploadCloud,
+  Check,
+  Users,
+  Loader2,
+  UserPlus,
+} from "lucide-react";
 
 import { formatDate, pluralize } from "@/lib/format";
 import { Button } from "@/components/ui/button";
@@ -17,6 +24,7 @@ import {
 } from "@/components/ui/dialog";
 import { EmptyState } from "@/components/empty-state";
 import { CsvDropzone, type CsvParseResult } from "@/components/csv-dropzone";
+import { ManualAddDialog } from "@/components/contacts/manual-add-dialog";
 import type { GroupSummary } from "@/lib/groups";
 
 function UploadDialog({
@@ -154,6 +162,7 @@ function UploadDialog({
 
 export function GroupsBrowser({ groups }: { groups: GroupSummary[] }) {
   const [uploadOpen, setUploadOpen] = React.useState(false);
+  const [manualOpen, setManualOpen] = React.useState(false);
 
   return (
     <>
@@ -162,15 +171,25 @@ export function GroupsBrowser({ groups }: { groups: GroupSummary[] }) {
           <EmptyState
             icon={Users}
             title="No groups yet"
-            description="Upload a CSV to create your first contact group."
+            description="Add contacts manually or upload a CSV to create your first group."
             action={
-              <Button
-                onClick={() => setUploadOpen(true)}
-                className="gap-1.5"
-              >
-                <UploadCloud className="size-4" />
-                Upload a CSV
-              </Button>
+              <div className="flex flex-wrap items-center justify-center gap-2">
+                <Button
+                  onClick={() => setManualOpen(true)}
+                  className="gap-1.5"
+                >
+                  <UserPlus className="size-4" />
+                  Add manually
+                </Button>
+                <Button
+                  onClick={() => setUploadOpen(true)}
+                  variant="outline"
+                  className="gap-1.5"
+                >
+                  <UploadCloud className="size-4" />
+                  Upload a CSV
+                </Button>
+              </div>
             }
           />
         </div>
@@ -180,14 +199,23 @@ export function GroupsBrowser({ groups }: { groups: GroupSummary[] }) {
             <span className="text-muted-foreground text-sm">
               {pluralize(groups.length, "group")}
             </span>
-            <Button
-              onClick={() => setUploadOpen(true)}
-              variant="outline"
-              className="gap-1.5"
-            >
-              <UploadCloud className="size-4" />
-              Upload CSV
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                onClick={() => setManualOpen(true)}
+                className="gap-1.5"
+              >
+                <UserPlus className="size-4" />
+                Add contacts
+              </Button>
+              <Button
+                onClick={() => setUploadOpen(true)}
+                variant="outline"
+                className="gap-1.5"
+              >
+                <UploadCloud className="size-4" />
+                Upload CSV
+              </Button>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -199,6 +227,11 @@ export function GroupsBrowser({ groups }: { groups: GroupSummary[] }) {
       )}
 
       <UploadDialog open={uploadOpen} onOpenChange={setUploadOpen} />
+      <ManualAddDialog
+        open={manualOpen}
+        onOpenChange={setManualOpen}
+        target={{ mode: "create" }}
+      />
     </>
   );
 }
