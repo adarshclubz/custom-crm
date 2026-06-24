@@ -1,6 +1,7 @@
 import { supabase } from '@/lib/supabase'
 import { performSend } from '@/lib/queue'
 import { validateBulk, renderTemplate, type RenderableContact, type BulkValidation } from '@/lib/templates'
+import { dueAtMs } from '@/lib/followup-schedule.mjs'
 
 // Automated follow-up engine. A campaign can carry an ordered sequence of steps
 // (campaign_followups). After a recipient's INITIAL email is sent we "arm" step 0
@@ -10,7 +11,9 @@ import { validateBulk, renderTemplate, type RenderableContact, type BulkValidati
 // step relative to THAT send. At most one pending row per (campaign, contact).
 
 // Dev knob: in prod a "day" is 86400s; set this lower to watch a whole chain fire
-// in seconds. Mirrors SEND_DELAY_* in lib/queue.ts.
+// in seconds. Mirrors SEND_DELAY_* in lib/queue.ts. At the real 86400 value,
+// automated steps count business days only (skipping Sat/Sun in IST — see
+// lib/followup-schedule.mjs); a compressed day falls back to raw elapsed time.
 const WAIT_UNIT_SECONDS = Number(process.env.FOLLOWUP_WAIT_UNIT_SECONDS ?? 86_400)
 const MAX_ATTEMPTS = 5
 const RUN_BATCH = 25
@@ -36,7 +39,7 @@ export async function getCampaignFollowups(campaignId: string): Promise<Followup
 }
 
 function dueAt(fromMs: number, waitDays: number): string {
-  return new Date(fromMs + waitDays * WAIT_UNIT_SECONDS * 1000).toISOString()
+  return new Date(dueAtMs(fromMs, waitDays, WAIT_UNIT_SECONDS)).toISOString()
 }
 
 // "Re: <subject>" without doubling an existing Re:.

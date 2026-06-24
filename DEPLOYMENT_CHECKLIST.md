@@ -1,6 +1,6 @@
 # Deployment Checklist — Custom CRM
 
-Last updated: 2026-06-22. Run top to bottom; each section gates the next.
+Last updated: 2026-06-24. Run top to bottom; each section gates the next.
 See `API_REFERENCE.md` for endpoint details and `SUNSET_APIS.md` for routes removed in this cycle.
 
 ---
@@ -21,7 +21,7 @@ See `API_REFERENCE.md` for endpoint details and `SUNSET_APIS.md` for routes remo
 | `FOLLOWUP_SECRET` | auth for `/api/followups/run` | ⚠️ **must set in prod** |
 | `SEND_DELAY_MIN_SECONDS` | bulk send stagger (min) | tune for rate limits |
 | `SEND_DELAY_MAX_SECONDS` | bulk send stagger (max) | |
-| `FOLLOWUP_WAIT_UNIT_SECONDS` | follow-up `waitDays` unit | set to `86400` for real days; smaller only for testing |
+| `FOLLOWUP_WAIT_UNIT_SECONDS` | follow-up `waitDays` unit | set to `86400` for real days; smaller only for testing. At `86400`, automated steps count **business days only** — Sat/Sun are skipped, measured in IST (Asia/Kolkata). A smaller (test) value uses raw elapsed time with no weekend skipping. |
 
 - [ ] All 13 set in the prod environment.
 - [ ] `GOOGLE_OAUTH_REDIRECT_URI` and `APP_BASE_URL` point at the **prod domain** (not localhost).
